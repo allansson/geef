@@ -10,7 +10,7 @@
      terminate/2, code_change/3]).
 
 %% API
--export([open/1, init/2, path/1, workdir/1, odb/1, is_bare/1, references/1, discover/1,
+-export([clone/2, open/1, init/2, path/1, workdir/1, odb/1, is_bare/1, references/1, discover/1,
      lookup_object/2, revwalk/1, stop/1,
      reference_dwim/2, handle/1, iterator/2]).
 -export([reference_has_log/2]).
@@ -31,6 +31,16 @@
 -spec discover(iolist()) -> {ok, binary()} | error | {error, term()}.
 discover(Path) ->
     geef_nif:repository_discover(Path).
+
+%% @doc Clone a repository from some remote path into the given local path.
+-spec clone(iolist(), iolist()) -> {ok, pid()} | {error, term()}.
+clone(RemotePath, LocalPath) ->
+    case geef_nif:repository_clone(RemotePath, LocalPath) of
+    {ok, Handle} ->
+        start_link(Handle);
+    Other ->
+        Other
+    end.
 
 %% @doc Open an existing repository. Path must point to the git-dir or
 %% worktree

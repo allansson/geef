@@ -3,6 +3,9 @@ defmodule Geef.Repository do
 
   def stop(repo), do: :geef_repo.stop(repo)
 
+  def clone(remote_path, local_path),  do: :geef_repo.clone(remote_path, local_path)
+  def clone!(remote_path, local_path), do: :geef_repo.clone(remote_path, local_path) |> assert_ok
+
   def open(path),  do: :geef_repo.open(path)
   def open!(path), do: :geef_repo.open(path) |> assert_ok
 

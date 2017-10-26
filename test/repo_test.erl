@@ -10,12 +10,19 @@ repo_test_() ->
 					fun commit_create_test/1, fun commit_message_test/1,
 					fun commit_tree_test/1]}.
 
-start() ->
+temp_dir() ->
     {A, B, C} = os:timestamp(),
     N = node(),
-    TmpDir = io_lib:format("/tmp/geef-~p~p~p~p.git", [N, A, B, C]),
+    io_lib:format("/tmp/geef-~p~p~p~p.git", [N, A, B, C]).
+
+start() ->
+    TmpDir = temp_dir(),
     {ok, Repo} = geef_repo:init(TmpDir, true),
     Repo.
+
+clone_test() ->
+    TmpDir = temp_dir(),
+    {ok, _Repo} = geef_repo:clone("https://github.com/allansson/geef", TmpDir).
 
 bare_test(Repo) ->
     [?_assertEqual(geef_repo:is_bare(Repo), true)].

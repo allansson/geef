@@ -10,6 +10,10 @@
 
 -define(NIF_FN, nif_error(?LINE)).
 
+-spec repository_clone(iolist(), iolist()) -> {ok, term()} | {error, term()}.
+repository_clone(_RemotePath, _LocalPath) ->
+    nif_error(?LINE).
+
 -spec repository_open(iolist()) -> {ok, term()} | {error, term()}.
 repository_open(_Val) ->
     nif_error(?LINE).

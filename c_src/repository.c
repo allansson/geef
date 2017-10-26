@@ -72,6 +72,38 @@ geef_repository_open(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 }
 
 ERL_NIF_TERM
+geef_repository_clone(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
+{
+	git_repository *repo;
+	geef_repository *res_repo;
+	ErlNifBinary remotePathBin;
+	ErlNifBinary localPathBin;
+	ERL_NIF_TERM term_repo;
+
+	if (!enif_inspect_iolist_as_binary(env, argv[0], &remotePathBin))
+		return enif_make_badarg(env);
+
+	if (!geef_terminate_binary(&remotePathBin))
+		return geef_oom(env);
+
+	if (!enif_inspect_iolist_as_binary(env, argv[1], &localPathBin))
+		return enif_make_badarg(env);
+
+	if (!geef_terminate_binary(&localPathBin))
+		return geef_oom(env);
+
+	if (git_clone(&repo, (char *) remotePathBin.data, (char *) localPathBin.data, NULL) < 0)
+		return geef_error(env);
+
+	res_repo = enif_alloc_resource(geef_repository_type, sizeof(geef_repository));
+	res_repo->repo = repo;
+	term_repo = enif_make_resource(env, res_repo);
+	enif_release_resource(res_repo);
+
+	return enif_make_tuple2(env, atoms.ok, term_repo);
+}
+
+ERL_NIF_TERM
 geef_repository_discover(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[])
 {
 	git_buf buf = {NULL};
