@@ -115,8 +115,8 @@ defmodule Geef.Mixfile do
     [ app: :geef,
       version: "0.0.1",
       compilers: [:nif, :erlang, :elixir, :app],
-      deps: deps,
-      dialyzer: dialyzer ]
+      deps: deps(),
+      dialyzer: dialyzer() ]
   end
 
   def nif do
